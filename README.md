@@ -1,29 +1,31 @@
-# Indian Company Financial Statements Web App
+# Indian Company Financials (Pure Web App)
 
-A lightweight Flask website where you type an Indian company name and it fetches annual financial statements for the last 4-5 years:
+This is a **pure web application** (no Python backend) built with:
+- HTML
+- CSS
+- Vanilla JavaScript
 
+It lets you enter an Indian company name, auto-resolves a `.BSE`/`.NSE` symbol, and fetches:
 - Income Statement
 - Balance Sheet
 - Cash Flow Statement
 
-## How it works
+for the past 4-5 years.
 
-1. Searches Yahoo Finance for NSE/BSE symbols (`.NS` / `.BO`) from the entered company name.
-2. Pulls statement data through `yfinance`.
-3. Renders data in statement tables on a simple web UI.
+## Data source
+- Alpha Vantage API (`SYMBOL_SEARCH`, `INCOME_STATEMENT`, `BALANCE_SHEET`, `CASH_FLOW`)
 
-## Run locally
+## Run
+Because this is static, you can open `web/index.html` directly, or serve it:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python app.py
+python -m http.server 8080
 ```
 
-Then open `http://127.0.0.1:5000`.
+Then visit:
+- `http://localhost:8080/web/`
 
 ## Notes
-
-- `years` is capped at 5 by API.
-- Data availability depends on Yahoo Finance coverage for the specific company.
+- You need your own Alpha Vantage API key (free tier works).
+- Free tier has rate limits (typically 5 requests/minute).
+- Symbol matching quality depends on provider search results.
