@@ -9,10 +9,9 @@
   <body>
     <main class="container">
       <h1>Indian Company Financials</h1>
-      <p class="subtitle">Pure web app (HTML/CSS/JS). Enter company name and fetch 4-5 years of statements.</p>
+      <p class="subtitle">Type an Indian company name to fetch 4–5 years of statements automatically.</p>
 
       <form id="search-form" class="controls">
-        <input id="apiKey" type="password" placeholder="Alpha Vantage API Key" required />
         <input id="companyName" type="text" placeholder="e.g. Reliance Industries" required />
         <select id="years">
           <option value="4">Last 4 years</option>
@@ -21,7 +20,7 @@
         <button type="submit">Fetch</button>
       </form>
 
-      <p class="hint">Get a free key from alphavantage.co. For Indian stocks, symbol search typically returns `.BSE` or `.NSE` symbols.</p>
+      <p class="hint">Data source: Yahoo Finance. If one exchange symbol has no statement data, the app tries alternates.</p>
       <p id="status" class="status"></p>
 
       <section id="results" class="hidden">
