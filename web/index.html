@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indian Company Financials</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Indian Company Financials</h1>
+      <p class="subtitle">Type an Indian company name to fetch 4–5 years of statements automatically.</p>
+
+      <form id="search-form" class="controls">
+        <input id="companyName" type="text" placeholder="e.g. Reliance Industries" required />
+        <select id="years">
+          <option value="4">Last 4 years</option>
+          <option value="5" selected>Last 5 years</option>
+        </select>
+        <button type="submit">Fetch</button>
+      </form>
+
+      <p class="hint">Data source: Yahoo Finance. If one exchange symbol has no statement data, the app tries alternates.</p>
+      <p id="status" class="status"></p>
+
+      <section id="results" class="hidden">
+        <h2 id="companyHeader"></h2>
+        <div id="tables"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
