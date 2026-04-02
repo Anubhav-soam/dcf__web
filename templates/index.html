@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indian Company Financial Statements</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Indian Company Financial Dashboard</h1>
+      <p class="subtitle">Search a company name to fetch the last 4-5 years of annual statements.</p>
+
+      <form id="search-form" class="search-panel">
+        <input id="company" name="company" placeholder="e.g. Reliance Industries" required />
+        <select id="years" name="years">
+          <option value="4">Last 4 years</option>
+          <option value="5" selected>Last 5 years</option>
+        </select>
+        <button type="submit">Fetch statements</button>
+      </form>
+
+      <p id="status" class="status"></p>
+
+      <section id="results" class="hidden">
+        <h2 id="company-heading"></h2>
+        <div id="tables"></div>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById('search-form');
+      const statusEl = document.getElementById('status');
+      const resultsEl = document.getElementById('results');
+      const headingEl = document.getElementById('company-heading');
+      const tablesEl = document.getElementById('tables');
+
+      const toCurrency = (val) => {
+        if (val === null || val === undefined) return '—';
+        if (typeof val !== 'number') return String(val);
+        return new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(val);
+      };
+
+      const createTable = (title, statement, years) => {
+        const metrics = Object.keys(statement || {});
+        if (!metrics.length) return `<h3>${title}</h3><p class="empty">No data found.</p>`;
+
+        const header = years.map((y) => `<th>${y}</th>`).join('');
+        const rows = metrics
+          .map((metric) => {
+            const values = years.map((year) => `<td>${toCurrency(statement[metric][year])}</td>`).join('');
+            return `<tr><th>${metric}</th>${values}</tr>`;
+          })
+          .join('');
+
+        return `
+          <article class="statement-card">
+            <h3>${title}</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Metric</th>${header}</tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>
+          </article>
+        `;
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const company = document.getElementById('company').value.trim();
+        const years = document.getElementById('years').value;
+
+        statusEl.textContent = 'Fetching data...';
+        resultsEl.classList.add('hidden');
+        tablesEl.innerHTML = '';
+
+        try {
+          const res = await fetch(`/api/financials?company=${encodeURIComponent(company)}&years=${years}`);
+          const data = await res.json();
+
+          if (!res.ok) throw new Error(data.error || 'Failed to fetch financial statements');
+
+          headingEl.textContent = `${data.company} (${data.symbol})`;
+          tablesEl.innerHTML = [
+            createTable('Income Statement', data.income_statement, data.years),
+            createTable('Balance Sheet', data.balance_sheet, data.years),
+            createTable('Cash Flow Statement', data.cash_flow, data.years),
+          ].join('');
+
+          statusEl.textContent = 'Done.';
+          resultsEl.classList.remove('hidden');
+        } catch (err) {
+          statusEl.textContent = err.message;
+        }
+      });
+    </script>
+  </body>
+</html>
